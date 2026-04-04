@@ -6,10 +6,11 @@ const pool = new Pool({
     ssl: {
         rejectUnauthorized: false,
     },
+    family: 4 // 🔥 critical fix
 });
 
 pool.connect()
-    .then(() => console.log("Supabase PostgreSQL connected"))
-    .catch((err) => console.error("Connection error", err.stack));
+    .then(() => console.log("✅ PostgreSQL connected"))
+    .catch((err) => console.error("❌ Connection error", err));
 
 module.exports = pool;
