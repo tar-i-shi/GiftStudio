@@ -18,7 +18,11 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: "*"
+    origin: [
+        "http://localhost:5173",
+        "https://gift-studio-gumt.vercel.app"
+    ],
+    credentials: true
 }));
 app.use(express.json());
 
