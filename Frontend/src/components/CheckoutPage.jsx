@@ -62,8 +62,8 @@ function CheckoutPage() {
                 price: parseFloat(item.price.replace(/[^\d.]/g, '')),
             }));
 
-            const response = await axios.post(
-                'http://localhost:5000/api/orders/place',
+
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders/place`,
                 {
                     cartItems: itemsToSend,
                     address,

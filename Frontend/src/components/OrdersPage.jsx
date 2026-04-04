@@ -12,11 +12,14 @@ function OrdersPage() {
             if (!token) return;
 
             try {
-                const response = await axios.get('http://localhost:5000/api/orders/my-orders', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const response = await axios.get(
+                    `${import.meta.env.VITE_API_URL}/api/orders/my-orders`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
                 setOrders(response.data);
             } catch (err) {
                 console.error('Failed to fetch orders:', err);

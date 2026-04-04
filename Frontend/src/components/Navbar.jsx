@@ -24,7 +24,7 @@ export default function Navbar() {
             setLoading(true);
 
             // ✅ IMPORTANT: use correct backend route
-            fetch(`http://localhost:5000/api/search?q=${encodeURIComponent(searchTerm)}`)
+            fetch(`${import.meta.env.VITE_API_URL}/api/search?q=${encodeURIComponent(searchTerm)}`)
                 .then(res => res.json())
                 .then(data => {
                     if (Array.isArray(data)) {
@@ -64,7 +64,7 @@ export default function Navbar() {
                     <Link to="/common-gifts">Gifts</Link>
                     <Link to="/personalised-products">Personalised</Link>
                     <Link to="/occasions">Occasions</Link>
-                    <Link to="/contact">Contact</Link>
+                    <li><Link to="/contact">Contact</Link></li>
                 </div>
 
                 <div className="flex items-center space-x-4">

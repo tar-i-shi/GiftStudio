@@ -40,7 +40,7 @@ export default function CustomPhotoMug() {
         try {
             setLoading(true);
             const response = await axios.post(
-                "http://localhost:5000/api/photo-mug",
+                `${import.meta.env.VITE_API_URL}/api/photo-mug`,
                 formData,
                 {
                     headers: {

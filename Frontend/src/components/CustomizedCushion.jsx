@@ -45,8 +45,9 @@ export default function CustomizedCushion() {
 
         try {
             setLoading(true);
+
             const response = await axios.post(
-                "http://localhost:5000/api/custom-cushion",
+                `${import.meta.env.VITE_API_URL}/api/custom-cushion`,
                 {
                     userId: user.id,
                     size: selectedSize,
