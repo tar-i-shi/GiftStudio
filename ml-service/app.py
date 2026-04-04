@@ -1,5 +1,3 @@
-# app.py
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from sentence_transformers import SentenceTransformer, util
@@ -7,13 +5,10 @@ from sentence_transformers import SentenceTransformer, util
 app = Flask(__name__)
 CORS(app)
 
-# ✅ Health check route (IMPORTANT for Render)
 @app.route('/')
 def home():
     return "ML Service is running 🚀"
 
-
-# ✅ Gift data (UPDATED IMAGE PATHS)
 gift_data = [
     {"name": "Pink Birthday Balloons", "price": "₹1,499", "image": "/assets/birth_balloon_pink.webp", "occasion": "Birthday"},
     {"name": "Chocoholic", "price": "₹1,999", "image": "/assets/b_chocoholic.webp", "occasion": "Birthday"},
@@ -35,52 +30,38 @@ gift_data = [
     {"name": "Healing Hamper", "price": "₹1,199", "image": "/assets/grand_box.webp", "occasion": "Get Well Soon"},
 ]
 
-# ✅ Load model once (IMPORTANT for performance)
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
 gift_names = [gift["name"] for gift in gift_data]
 gift_embeddings = model.encode(gift_names, convert_to_tensor=True)
 
 
-# 🔍 GET search
 @app.route('/semantic-search', methods=['GET'])
 def semantic_search():
-    query = request.args.get('q', '').strip()
+    query = request.args.get('q', '').strip().lower()
 
     if not query:
         return jsonify([])
 
+    # ✅ Keyword fallback (VERY IMPORTANT)
+    keyword_results = [gift for gift in gift_data if query in gift["name"].lower()]
+
+    if keyword_results:
+        return jsonify(keyword_results[:5])
+
+    # ✅ Semantic search
     query_embedding = model.encode(query, convert_to_tensor=True)
     scores = util.cos_sim(query_embedding, gift_embeddings)[0]
 
-    top_k = min(5, len(scores))
-    top_results = scores.topk(k=top_k)
+    # ✅ If similarity too low → fallback
+    if scores.max() < 0.3:
+        return jsonify(gift_data[:5])
 
+    top_results = scores.topk(k=min(5, len(scores)))
     results = [gift_data[int(idx)] for idx in top_results[1].tolist()]
 
     return jsonify(results)
 
 
-# 🔍 POST search
-@app.route('/search', methods=['POST'])
-def search_post():
-    data = request.get_json()
-    query = data.get("query", "").strip()
-
-    if not query:
-        return jsonify([])
-
-    query_embedding = model.encode(query, convert_to_tensor=True)
-    scores = util.cos_sim(query_embedding, gift_embeddings)[0]
-
-    top_k = min(5, len(scores))
-    top_results = scores.topk(k=top_k)
-
-    results = [gift_data[int(idx)] for idx in top_results[1].tolist()]
-
-    return jsonify(results)
-
-
-# 🚀 Run app (Render compatible)
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=10000)

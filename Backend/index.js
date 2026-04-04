@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 require("dotenv").config();   // ✅ FIRST
-
+const axios = require("axios");
 require("./config/db");
 
 const userRoutes = require("./routes/userRoutes");
@@ -12,6 +12,7 @@ const hamperRoutes = require("./routes/hamperRoutes");
 const engravedRoutes = require("./routes/engravedItems");
 const orderRoutes = require('./routes/orderRoutes');
 const giftRoutes = require('./routes/giftRoutes');
+const searchRoutes = require("./routes/searchRoutes");
 
 const app = express();
 
@@ -34,6 +35,10 @@ app.use('/api', photoMugRoutes);
 app.use("/api", hamperRoutes);
 app.use("/api", engravedRoutes);
 app.use('/api/orders', orderRoutes);
+
+
+
+app.use("/api", searchRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
