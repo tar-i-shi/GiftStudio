@@ -19,7 +19,7 @@ export default function Hero() {
                 </div>
                 <div className="md:w-1/2 mt-12 md:mt-0">
                     <img
-                        src="src/assets/hero.jpg"
+                        src="assets/hero.jpg"
                         alt="Gift Box"
                         className="rounded-lg shadow-lg"
                     />

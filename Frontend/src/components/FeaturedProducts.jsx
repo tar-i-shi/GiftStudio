@@ -7,28 +7,28 @@ const products = [
         name: "Custom Photo Mug",
         price: "₹499",
         image:
-            "src/assets/cn_photo_mug.jpg",
+            "assets/cn_photo_mug.jpg",
     },
     {
         id: 2,
         name: "Personalized Cushion",
         price: "₹799",
         image:
-            "src/assets/cn_cushion.webp",
+            "assets/cn_cushion.webp",
     },
     {
         id: 3,
         name: "Engraved Wooden Customization",
         price: "₹1299",
         image:
-            "src/assets/cn_wood_keychain.avif",
+            "assets/cn_wood_keychain.avif",
     },
     {
         id: 4,
         name: "Customized Hamper",
         price: "₹799",
         image:
-            "src/assets/b_chocoholic.webp",
+            "assets/b_chocoholic.webp",
     },
 ];
 

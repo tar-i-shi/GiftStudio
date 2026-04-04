@@ -4,22 +4,22 @@ import { Link } from "react-router-dom"; // import Link
 const categories = [
     {
         name: "Birthday Gifts",
-        image: "src/assets/b_tea_time_moments.webp",
+        image: "assets/b_tea_time_moments.webp",
         path: "/common-gifts?occasion=Birthday",
     },
     {
         name: "Anniversary Gifts",
-        image: "src/assets/a_love_letter_necklace.webp",
+        image: "assets/a_love_letter_necklace.webp",
         path: "/common-gifts?occasion=Anniversary",
     },
     {
         name: "Housewarming",
-        image: "src/assets/h_elegant_charm.webp",
+        image: "assets/h_elegant_charm.webp",
         path: "/common-gifts?occasion=Housewarming",
     },
     {
         name: "Proposal",
-        image: "src/assets/p_Gracefull_charm.webp",
+        image: "assets/p_Gracefull_charm.webp",
         path: "/common-gifts?occasion=Proposal",
     },
 ];
