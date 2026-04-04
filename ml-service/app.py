@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from sentence_transformers import SentenceTransformer, util
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
 CORS(app)
@@ -30,10 +31,14 @@ gift_data = [
     {"name": "Healing Hamper", "price": "₹1,199", "image": "/assets/grand_box.webp", "occasion": "Get Well Soon"},
 ]
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
+# -------------------------------
+# ✅ TF-IDF MODEL (LIGHTWEIGHT)
+# -------------------------------
 
-gift_names = [gift["name"] for gift in gift_data]
-gift_embeddings = model.encode(gift_names, convert_to_tensor=True)
+gift_names = [gift["name"].lower() for gift in gift_data]
+
+vectorizer = TfidfVectorizer()
+gift_vectors = vectorizer.fit_transform(gift_names)
 
 
 @app.route('/semantic-search', methods=['GET'])
@@ -43,25 +48,36 @@ def semantic_search():
     if not query:
         return jsonify([])
 
-    # ✅ Keyword fallback (VERY IMPORTANT)
-    keyword_results = [gift for gift in gift_data if query in gift["name"].lower()]
+    # -------------------------------
+    # ✅ Keyword Match (FASTEST)
+    # -------------------------------
+    keyword_results = [
+        gift for gift in gift_data
+        if query in gift["name"].lower()
+    ]
 
     if keyword_results:
         return jsonify(keyword_results[:5])
 
-    # ✅ Semantic search
-    query_embedding = model.encode(query, convert_to_tensor=True)
-    scores = util.cos_sim(query_embedding, gift_embeddings)[0]
+    # -------------------------------
+    # ✅ TF-IDF SEMANTIC SEARCH
+    # -------------------------------
+    query_vector = vectorizer.transform([query])
+    scores = cosine_similarity(query_vector, gift_vectors)[0]
 
-    # ✅ If similarity too low → fallback
-    if scores.max() < 0.3:
+    # If no good match → fallback
+    if max(scores) < 0.1:
         return jsonify(gift_data[:5])
 
-    top_results = scores.topk(k=min(5, len(scores)))
-    results = [gift_data[int(idx)] for idx in top_results[1].tolist()]
+    # Get top results
+    top_indices = scores.argsort()[::-1][:5]
+
+    results = [gift_data[i] for i in top_indices]
 
     return jsonify(results)
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+    import os
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
