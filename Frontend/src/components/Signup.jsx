@@ -18,6 +18,9 @@ export default function Signup() {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/api/auth/signup`,
                 form
+                {
+                    withCredentials: true   // ✅ IMPORTANT
+                }
             );
             alert(res.data.message);
             navigate("/login");

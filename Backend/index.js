@@ -17,11 +17,28 @@ const searchRoutes = require("./routes/searchRoutes");
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://gift-studio-gumt.vercel.app",
+    "https://gift-studio-gumt-2bcdjo3nw-tar-i-shis-projects.vercel.app",
+    "https://gift-studio-1.vercel.app"
+];
+
 app.use(cors({
-    origin: [
-        "http://localhost:5173",
-        "https://gift-studio-gumt.vercel.app"
-    ],
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, origin); // ✅ return origin
+        } else {
+            console.log("Blocked origin:", origin);
+            callback(null, false); // ✅ don't throw error
+        }
+    },
+    credentials: true
+}));
+
+// ✅ Handle preflight
+app.options("*", cors({
+    origin: allowedOrigins,
     credentials: true
 }));
 app.use(express.json());
