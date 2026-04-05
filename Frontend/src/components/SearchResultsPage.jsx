@@ -42,7 +42,11 @@ export default function SearchResultsPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {results.map((gift, index) => (
                         <div key={index} className="border p-4 rounded shadow hover:shadow-lg transition">
-                            <img src={gift.image} alt={gift.name} className="w-full h-40 object-cover rounded mb-2" />
+                            <img
+                                src={gift.image}
+                                alt={gift.name}
+                                className="w-full h-40 object-cover rounded mb-2"
+                            />
                             <h3 className="text-lg font-semibold">{gift.name}</h3>
                             <p className="text-indigo-600 font-bold">{gift.price}</p>
                             <p className="text-sm text-gray-500">{gift.occasion}</p>
