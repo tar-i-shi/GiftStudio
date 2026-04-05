@@ -18,21 +18,21 @@ def home():
 
 # ✅ Data (FIXED IMAGE PATHS)
 gift_data = [
-    {"name": "Pink Birthday Balloons"},
-    {"name": "Chocoholic"},
-    {"name": "Tea Time Moments"},
-    {"name": "Yellow Black Birthday Balloons"},
-    {"name": "The Glitter & Ganache Gift Box"},
-    {"name": "Candle & Crave Hamper"},
-    {"name": "Anniversary Gift Box"},
-    {"name": "Cupid's Treasure"},
-    {"name": "Coffee & Conversation"},
-    {"name": "Promise of Love"},
-    {"name": "Jenga Wedding Version"},
-    {"name": "Evening Gaze"},
-    {"name": "Gift of Blessings"},
-    {"name": "Golden Glance"},
-    {"name": "Healing Hamper"},
+    {"id": 1, "name": "Pink Birthday Balloons"},
+    {"id": 2, "name": "Chocoholic"},
+    {"id": 3, "name": "Tea Time Moments"},
+    {"id": 4, "name": "Yellow Black Birthday Balloons"},
+    {"id": 5, "name": "The Glitter & Ganache Gift Box"},
+    {"id": 6, "name": "Candle & Crave Hamper"},
+    {"id": 7, "name": "Anniversary Gift Box"},
+    {"id": 8, "name": "Cupid's Treasure"},
+    {"id": 9, "name": "Coffee & Conversation"},
+    {"id": 10, "name": "Promise of Love"},
+    {"id": 12, "name": "Jenga Wedding Version"},
+    {"id": 13, "name": "Evening Gaze"},
+    {"id": 14, "name": "Gift of Blessings"},
+    {"id": 15, "name": "Golden Glance"},
+    {"id": 16, "name": "Healing Hamper"}
 ]
 
 # -------------------------------
@@ -66,7 +66,7 @@ def semantic_search():
         ]
 
         if keyword_results:
-            return jsonify(keyword_results[:5])
+            return jsonify([gift["id"] for gift in keyword_results[:5]])
 
         # -------------------------------
         # ✅ TF-IDF SEARCH
@@ -80,9 +80,11 @@ def semantic_search():
 
         # ✅ top matches
         top_indices = scores.argsort()[::-1][:5]
-        results = [gift_data[i] for i in top_indices]
-
+        results = [gift_data[i]["id"] for i in top_indices]
+        
         return jsonify(results)
+
+        
 
     except Exception as e:
         print("❌ ERROR:", str(e))

@@ -1,18 +1,18 @@
 const pool = require("../config/db");
 
-const getGiftsByNames = async (names) => {
-    if (!names.length) return [];
+const getGiftsByIds = async (ids) => {
+    if (!ids.length) return [];
 
     const query = `
         SELECT id, name, price, image, occasion
         FROM gifts
-        WHERE name = ANY($1)
+        WHERE id = ANY($1)
     `;
 
-    const result = await pool.query(query, [names]);
+    const result = await pool.query(query, [ids]);
     return result.rows;
 };
 
 module.exports = {
-    getGiftsByNames
+    getGiftsByIds
 };

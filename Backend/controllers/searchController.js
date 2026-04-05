@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { getGiftsByNames } = require("../models/searchModel");
+const { getGiftsByIds } = require("../models/searchModel");
 
 const handleSearch = async (req, res) => {
     try {
@@ -7,27 +7,25 @@ const handleSearch = async (req, res) => {
 
         if (!query) return res.json([]);
 
-        if (!process.env.ML_API_URL) {
-            throw new Error("ML_API_URL not defined");
-        }
-
-        // 🔥 Call ML API
         const mlResponse = await axios.get(
             `${process.env.ML_API_URL}/semantic-search`,
             { params: { q: query } }
         );
 
-        const mlData = mlResponse.data;
-
-        // ✅ SAFE extraction
-        const names = Array.isArray(mlData)
-            ? mlData.map(item => item.name)
+        const ids = Array.isArray(mlResponse.data)
+            ? mlResponse.data
             : [];
 
-        const gifts = await getGiftsByNames(names);
+        console.log("ML IDs:", ids);
 
-        // ❗ DO NOT MODIFY IMAGE PATH
-        res.json(gifts);
+        const gifts = await getGiftsByIds(ids);
+
+        // maintain ML order
+        const sorted = ids.map(id => gifts.find(g => g.id === id)).filter(Boolean);
+
+        res.json(sorted);
+
+
 
     } catch (err) {
         console.error("Search Error:", err.message);
