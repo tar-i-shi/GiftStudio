@@ -11,7 +11,7 @@ export default function SearchResultsPage() {
         if (!query) return;
 
         setLoading(true);
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/api/search?q=${encodeURIComponent(query)}`)
+        fetch(`${import.meta.env.VITE_API_URL}/api/search?q=${encodeURIComponent(query)}`)
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {
