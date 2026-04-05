@@ -6,7 +6,7 @@ const getGiftsByIds = async (ids) => {
     const query = `
         SELECT id, name, price, image, occasion
         FROM gifts
-        WHERE id = ANY($1)
+        WHERE id = ANY($1::int[])
     `;
 
     const result = await pool.query(query, [ids]);
