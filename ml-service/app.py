@@ -6,17 +6,14 @@ import os
 
 app = Flask(__name__)
 
-# ✅ Allow all (safe for now, restrict later if needed)
+# ✅ Enable CORS
 CORS(app)
-
-# ✅ Base URL for images (IMPORTANT)
-BASE_URL = os.environ.get("FRONTEND_URL", "https://gift-studio-gumt.vercel.app")
 
 @app.route('/')
 def home():
     return "ML Service is running 🚀"
 
-# ✅ Data (FIXED IMAGE PATHS)
+# ✅ Gift Data (WITH IDs)
 gift_data = [
     {"id": 1, "name": "Pink Birthday Balloons"},
     {"id": 2, "name": "Chocoholic"},
@@ -36,7 +33,7 @@ gift_data = [
 ]
 
 # -------------------------------
-# ✅ TF-IDF MODEL
+# ✅ TF-IDF MODEL (FIXED)
 # -------------------------------
 gift_names = [gift["name"].lower() for gift in gift_data]
 
@@ -51,9 +48,9 @@ def semantic_search():
     try:
         query = request.args.get('q', '').strip().lower()
 
-        print("Incoming query:", query)
+        print("➡️ Query:", query)
 
-        # ✅ Handle empty query
+        # ✅ Empty query
         if not query:
             return jsonify([])
 
@@ -66,7 +63,9 @@ def semantic_search():
         ]
 
         if keyword_results:
-            return jsonify([gift["id"] for gift in keyword_results[:5]])
+            ids = [gift["id"] for gift in keyword_results[:5]]
+            print("✅ Keyword IDs:", ids)
+            return jsonify(ids)
 
         # -------------------------------
         # ✅ TF-IDF SEARCH
@@ -74,21 +73,24 @@ def semantic_search():
         query_vector = vectorizer.transform([query])
         scores = cosine_similarity(query_vector, gift_vectors)[0]
 
-        # ✅ fallback if weak match
+        # fallback
         if len(scores) == 0 or max(scores) < 0.1:
-            return jsonify(gift_data[:5])
+            fallback_ids = [gift["id"] for gift in gift_data[:5]]
+            print("⚠️ Fallback IDs:", fallback_ids)
+            return jsonify(fallback_ids)
 
-        # ✅ top matches
+        # top matches
         top_indices = scores.argsort()[::-1][:5]
-        results = [gift_data[i]["id"] for i in top_indices]
-        
-        return jsonify(results)
+        result_ids = [gift_data[i]["id"] for i in top_indices]
 
-        
+        print("✅ TF-IDF IDs:", result_ids)
+
+        return jsonify(result_ids)
 
     except Exception as e:
         print("❌ ERROR:", str(e))
         return jsonify({"error": "Search failed"}), 500
+
 
 # -------------------------------
 # 🚀 RUN SERVER

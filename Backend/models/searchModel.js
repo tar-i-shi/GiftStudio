@@ -13,6 +13,4 @@ const getGiftsByIds = async (ids) => {
     return result.rows;
 };
 
-module.exports = {
-    getGiftsByIds
-};
+module.exports = { getGiftsByIds };

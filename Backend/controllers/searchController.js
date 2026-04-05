@@ -7,28 +7,34 @@ const handleSearch = async (req, res) => {
 
         if (!query) return res.json([]);
 
+        console.log("➡️ Query:", query);
+
+        // ✅ FIXED ML URL
         const mlResponse = await axios.get(
             `${process.env.ML_API_URL}/semantic-search`,
             { params: { q: query } }
         );
 
+        console.log("✅ ML raw response:", mlResponse.data);
+
+        // ✅ Expect array of IDs
         const ids = Array.isArray(mlResponse.data)
             ? mlResponse.data
             : [];
 
-        console.log("ML IDs:", ids);
+        if (!ids.length) return res.json([]);
 
         const gifts = await getGiftsByIds(ids);
 
-        // maintain ML order
-        const sorted = ids.map(id => gifts.find(g => g.id === id)).filter(Boolean);
+        // ✅ Maintain ML order
+        const sorted = ids
+            .map(id => gifts.find(g => g.id === id))
+            .filter(Boolean);
 
         res.json(sorted);
 
-
-
     } catch (err) {
-        console.error("Search Error:", err.message);
+        console.error("❌ Search Error FULL:", err);
 
         res.status(500).json({
             error: "Search failed",
@@ -37,6 +43,4 @@ const handleSearch = async (req, res) => {
     }
 };
 
-module.exports = {
-    handleSearch
-};
+module.exports = { handleSearch };
