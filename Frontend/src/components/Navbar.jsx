@@ -64,7 +64,7 @@ export default function Navbar() {
                     <Link to="/common-gifts">Gifts</Link>
                     <Link to="/personalised-products">Personalised</Link>
                     <Link to="/occasions">Occasions</Link>
-                    <li><Link to="/contact">Contact</Link></li>
+                    <Link to="/contact">Contact</Link>
                 </div>
 
                 <div className="flex items-center space-x-4">
