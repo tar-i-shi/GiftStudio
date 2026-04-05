@@ -26,12 +26,16 @@ const allowedOrigins = [
 // ✅ CORS (SAFE VERSION)
 app.use(cors({
     origin: function (origin, callback) {
-        console.log("Origin:", origin);
+        if (!origin) return callback(null, true);
 
-        if (!origin || allowedOrigins.includes(origin)) {
+        const allowed =
+            origin.endsWith(".vercel.app") ||
+            origin.includes("localhost");
+
+        if (allowed) {
             callback(null, true);
         } else {
-            console.log("Blocked by CORS:", origin);
+            console.log("Blocked:", origin);
             callback(null, false);
         }
     },
